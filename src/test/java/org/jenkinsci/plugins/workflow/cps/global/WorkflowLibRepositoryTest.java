@@ -2,10 +2,8 @@ package org.jenkinsci.plugins.workflow.cps.global;
 
 import hudson.model.Result;
 import java.io.File;
-import java.util.Arrays;
 
 import jenkins.model.Jenkins;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowExecution;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -108,26 +106,22 @@ public class WorkflowLibRepositoryTest {
             @Override public void evaluate() throws Throwable {
                 File vars = repo.workspace.resolve(UserDefinedGlobalVariableList.PREFIX).toFile();
                 vars.mkdirs();
-                FileUtils.writeStringToFile(new File(vars, "acmeVar.groovy"), StringUtils.join(Arrays.asList(
+                FileUtils.writeStringToFile(new File(vars, "acmeVar.groovy"), String.join("\n",
                         "def hello(name) {echo \"Hello ${name}\"}",
                         "def foo(x) { this.x = x+'-set'; }",
-                        "def bar() { return x+'-get' }")
-                        , "\n"));
-                FileUtils.writeStringToFile(new File(vars, "acmeFunc.groovy"), StringUtils.join(Arrays.asList(
-                        "def call(a,b) { echo \"call($a,$b)\" }")
-                        , "\n"));
-                FileUtils.writeStringToFile(new File(vars, "acmeBody.groovy"), StringUtils.join(Arrays.asList(
+                        "def bar() { return x+'-get' }"));
+                FileUtils.writeStringToFile(new File(vars, "acmeFunc.groovy"), String.join("\n",
+                        "def call(a,b) { echo \"call($a,$b)\" }"));
+                FileUtils.writeStringToFile(new File(vars, "acmeBody.groovy"), String.join("\n",
                         "def call(body) { ",
                         "  def config = [:]",
                         "  body.resolveStrategy = Closure.DELEGATE_FIRST",
                         "  body.delegate = config",
                         "  body()",
                         "  echo 'title was '+config.title",
-                        "}")
-                        , "\n"));
-                FileUtils.writeStringToFile(new File(vars, "acmeClass.groovy"), StringUtils.join(Arrays.asList(
-                        "@groovy.transform.Field int answer = 42")
-                        , "\n"));
+                        "}"));
+                FileUtils.writeStringToFile(new File(vars, "acmeClass.groovy"), String.join("\n",
+                        "@groovy.transform.Field int answer = 42"));
 
                 // simulate the effect of push
                 uvl.rebuild();
